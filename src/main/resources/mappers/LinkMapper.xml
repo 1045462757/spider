@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.LinkMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.domain.Link">
+        <id column="link_id" jdbcType="INTEGER" property="linkId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="visited" jdbcType="CHAR" property="visited"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    link_id, create_time, update_time, url, visited
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from link
+        where link_id = #{linkId,jdbcType=INTEGER}
+    </select>
+
+    <select id="countByUrl" parameterType="java.lang.String" resultType="integer">
+        select count(*) from link where url = #{url,jdbcType=VARCHAR}
+    </select>
+
+    <select id="listAllUnvisited" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from link where visited = '0'
+    </select>
+
+    <insert id="insert" keyColumn="link_id" keyProperty="linkId" parameterType="com.example.domain.Link"
+            useGeneratedKeys="true">
+        insert into link (url,visited)
+        values (#{url,jdbcType=VARCHAR}, #{visited,jdbcType=CHAR})
+    </insert>
+
+    <update id="updateByUrl" parameterType="com.example.domain.Link">
+        update link set
+        visited = #{visited,jdbcType=CHAR}
+        where url = #{url,jdbcType=INTEGER}
+    </update>
+</mapper>

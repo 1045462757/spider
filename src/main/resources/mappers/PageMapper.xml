@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.PageMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.domain.Page">
+        <id column="page_id" jdbcType="INTEGER" property="pageId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="contentType" jdbcType="VARCHAR" property="contentType"/>
+        <result column="p_charset" jdbcType="VARCHAR" property="charset"/>
+        <result column="content" jdbcType="BLOB" property="content"/>
+        <result column="parsed" jdbcType="CHAR" property="parsed"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        page_id, create_time, update_time, title, url, contentType, p_charset, content, parsed
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from page
+        where page_id = #{pageId,jdbcType=INTEGER}
+    </select>
+
+    <select id="countByUrl" parameterType="java.lang.String" resultType="integer">
+        select count(*) from page where url = #{url,jdbcType=VARCHAR}
+    </select>
+
+    <select id="listAllUnparsed" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from page where parsed = '0'
+    </select>
+
+    <insert id="insert" keyColumn="page_id" keyProperty="pageId" parameterType="com.example.domain.Page"
+            useGeneratedKeys="true">
+        insert into page (title, url, contentType, p_charset,content, parsed)
+        values (#{title,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{contentType,jdbcType=VARCHAR},
+        #{charset,jdbcType=VARCHAR}, #{content,jdbcType=BLOB}, #{parsed,jdbcType=CHAR})
+    </insert>
+
+    <update id="updateByUrl" parameterType="com.example.domain.Page">
+        update page set
+        parsed = #{parsed,jdbcType=CHAR}
+        where url = #{url,jdbcType=INTEGER}
+    </update>
+</mapper>
